@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Burger-O-Matic</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍔</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍔</text></svg>">
 <style>
   * { box-sizing: border-box; image-rendering: pixelated; margin: 0; padding: 0; }
 
@@ -16,75 +16,89 @@
     justify-content: center;
     align-items: flex-start;
     min-height: 100vh;
-    padding: 32px 16px;
+    padding: 24px 16px;
   }
 
+  /* Outer wrapper enforces 4:3 aspect ratio at up to 1000px wide */
+  #hbg-wrap {
+    width: 100%;
+    max-width: 1000px;
+    aspect-ratio: 4 / 3;
+  }
+
+  /* Inner root fills the wrapper exactly and clips overflow */
   #hbg-root {
     font-family: 'Press Start 2P', monospace;
     background: #1a1a2e;
     color: #e0e0e0;
-    padding: 20px 14px 28px;
-    border: 4px solid #4a4a8a;
-    box-shadow: inset 0 0 0 4px #0d0d1a;
     width: 100%;
-    max-width: 1000px;
-    aspect-ratio: 4/3;
+    height: 100%;
+    border: 6px solid #4a4a8a;
+    box-shadow: inset 0 0 0 5px #0d0d1a;
+    display: flex;
+    flex-direction: column;
+    padding: 1.4% 2.2%;
+    overflow: hidden;
   }
 
   .hbg-title {
     text-align: center;
-    font-size: 12px;
+    font-size: clamp(10px, 2.2vw, 22px);
     color: #ffd700;
-    letter-spacing: 2px;
-    margin-bottom: 4px;
-    text-shadow: 3px 3px 0 #8b6914;
+    letter-spacing: 4px;
+    margin-bottom: 0.3%;
+    text-shadow: 4px 4px 0 #8b6914;
+    flex-shrink: 0;
+    line-height: 1.2;
   }
 
   .hbg-subtitle {
     text-align: center;
-    font-size: 6px;
+    font-size: clamp(5px, 1vw, 10px);
     color: #888;
-    margin-bottom: 16px;
-    letter-spacing: 1px;
+    margin-bottom: 0.8%;
+    letter-spacing: 2px;
+    flex-shrink: 0;
   }
 
-  .pixel-deco { display: flex; justify-content: center; gap: 5px; margin-bottom: 10px; }
-  .px-block { width: 9px; height: 9px; background: #ffd700; }
+  .pixel-deco { display: flex; justify-content: center; gap: 6px; margin-bottom: 0.8%; flex-shrink: 0; }
+  .px-block { width: clamp(7px, 1.4vw, 14px); height: clamp(7px, 1.4vw, 14px); background: #ffd700; }
   .px-block:nth-child(even) { background: #c0392b; }
 
   .two-col {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 14px;
+    gap: 1%;
+    margin-bottom: 1%;
+    flex-shrink: 0;
   }
 
   .slot-machine, .side-machine {
     background: #0d0d1a;
     border: 4px solid #4a4a8a;
-    padding: 10px 8px;
-    box-shadow: inset 2px 2px 0 #000, inset -2px -2px 0 #6a6aaa;
+    padding: 1% 1.2%;
+    box-shadow: inset 3px 3px 0 #000, inset -3px -3px 0 #6a6aaa;
   }
 
   .section-head {
-    font-size: 6px;
+    font-size: clamp(5px, 1.1vw, 11px);
     color: #ffd700;
-    letter-spacing: 2px;
-    margin-bottom: 8px;
+    letter-spacing: 3px;
+    margin-bottom: 0.7%;
     text-align: center;
   }
 
   .slot-row {
     display: flex;
     align-items: center;
-    margin-bottom: 6px;
-    gap: 6px;
+    margin-bottom: 0.5%;
+    gap: 1%;
   }
 
   .slot-label {
-    font-size: 5px;
+    font-size: clamp(4px, 0.9vw, 9px);
     color: #ffd700;
-    width: 36px;
+    width: clamp(44px, 7.2vw, 72px);
     flex-shrink: 0;
     text-align: center;
     letter-spacing: 0.5px;
@@ -93,12 +107,12 @@
 
   .slot-window {
     flex: 1;
-    height: 36px;
+    height: clamp(28px, 5.2vh, 52px);
     background: #060612;
     border: 3px solid #333366;
     overflow: hidden;
     position: relative;
-    box-shadow: inset 2px 2px 0 #000;
+    box-shadow: inset 3px 3px 0 #000;
   }
 
   .slot-window::before, .slot-window::after {
@@ -115,17 +129,17 @@
   .slot-reel { display: flex; flex-direction: column; will-change: transform; }
 
   .slot-item {
-    height: 36px;
+    height: clamp(28px, 5.2vh, 52px);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 5px;
+    gap: 6px;
     color: #e0e0ff;
     white-space: nowrap;
     padding: 0 4px;
   }
-  .slot-item .si { font-size: 16px; line-height: 1; flex-shrink: 0; }
-  .slot-item .st { font-size: 5px; letter-spacing: 0.3px; color: #ccc; }
+  .slot-item .si { font-size: clamp(12px, 2.4vw, 24px); line-height: 1; flex-shrink: 0; }
+  .slot-item .st { font-size: clamp(4px, 0.9vw, 9px); letter-spacing: 0.5px; color: #ccc; }
   .slot-item.winner { background: #1a1a00; }
   .slot-item.winner .st { color: #ffd700; }
 
@@ -133,33 +147,34 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 14px;
-    gap: 8px;
+    margin-bottom: 1%;
+    gap: 0.5%;
+    flex-shrink: 0;
   }
 
   #lever-btn {
     font-family: 'Press Start 2P', monospace;
-    font-size: 8px;
+    font-size: clamp(7px, 1.4vw, 14px);
     background: #c0392b;
     color: #fff;
     border: 0;
     padding: 0;
     cursor: pointer;
-    width: 160px;
-    height: 40px;
+    width: 26%;
+    height: clamp(34px, 5.8vh, 58px);
     display: block;
-    box-shadow: 0 6px 0 #7b241c, 0 7px 0 #000;
-    letter-spacing: 1px;
+    box-shadow: 0 8px 0 #7b241c, 0 9px 0 #000;
+    letter-spacing: 2px;
     transition: box-shadow .08s, transform .08s;
     user-select: none;
   }
   #lever-btn:active, #lever-btn.pressed {
     box-shadow: 0 1px 0 #7b241c, 0 2px 0 #000;
-    transform: translateY(5px);
+    transform: translateY(7px);
   }
   #lever-btn:disabled {
     background: #555;
-    box-shadow: 0 6px 0 #333, 0 7px 0 #000;
+    box-shadow: 0 8px 0 #333, 0 9px 0 #000;
     cursor: not-allowed;
     color: #888;
   }
@@ -169,88 +184,112 @@
     justify-content: center;
     width: 100%;
     height: 100%;
-    border-top: 3px solid #e74c3c;
-    border-left: 3px solid #e74c3c;
+    border-top: 4px solid #e74c3c;
+    border-left: 4px solid #e74c3c;
   }
 
+  #status-msg {
+    font-size: clamp(5px, 1vw, 10px);
+    color: #888;
+    text-align: center;
+    letter-spacing: 2px;
+    flex-shrink: 0;
+  }
+
+  /* Result box takes all remaining vertical space */
   .result-box {
     background: #060612;
     border: 4px solid #4a4a8a;
-    padding: 12px 10px;
-    box-shadow: inset 2px 2px 0 #000;
-    min-height: 60px;
+    padding: 1% 1.5%;
+    box-shadow: inset 3px 3px 0 #000;
+    flex: 1;
+    min-height: 0;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
-    gap: 6px;
+    gap: 0.5%;
+    overflow: hidden;
   }
 
   .result-title {
-    font-size: 6.5px;
+    font-size: clamp(5px, 1.1vw, 11px);
     color: #ffd700;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
     text-align: center;
+    flex-shrink: 0;
   }
 
   .result-cols {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 6px 0;
     width: 100%;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
   }
 
   .result-col-head {
-    font-size: 5.5px;
+    font-size: clamp(4px, 0.85vw, 8.5px);
     color: #aaa;
     letter-spacing: 1px;
     text-align: center;
-    margin-bottom: 6px;
+    margin-bottom: 0.4%;
+  }
+
+  .result-burger-inner, .result-side-inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    padding: 0 2%;
   }
 
   .result-row {
     display: flex;
     align-items: center;
-    gap: 4px;
-    margin-bottom: 5px;
+    gap: 5px;
+    margin-bottom: 0.35%;
   }
-  .result-row .ri { font-size: 13px; line-height: 1; flex-shrink: 0; }
-  .result-row .rl { font-size: 4.5px; color: #888; letter-spacing: 0.5px; flex-shrink: 0; }
-  .result-row .rv { font-size: 5px; color: #fff; letter-spacing: 0.3px; }
+  .result-row .ri { font-size: clamp(10px, 1.6vw, 16px); line-height: 1; flex-shrink: 0; }
+  .result-row .rl { font-size: clamp(4px, 0.72vw, 7.2px); color: #888; letter-spacing: 0.5px; flex-shrink: 0; }
+  .result-row .rv { font-size: clamp(4px, 0.72vw, 7.2px); color: #fff; letter-spacing: 0.3px; }
 
-  .result-divider { width: 1px; background: #333366; margin: 0 8px; }
+  .result-divider-col {
+    display: flex;
+    justify-content: center;
+  }
+  .result-divider {
+    width: 2px;
+    background: #333366;
+    height: 100%;
+  }
 
   .result-side-item {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 6px;
     justify-content: center;
-    margin-top: 4px;
+    gap: 6px;
+    height: 100%;
+    padding-left: 6%;
   }
-  .result-side-item .ri { font-size: 18px; }
-  .result-side-item .rv { font-size: 6px; color: #fff; letter-spacing: 0.5px; }
-
-  #status-msg {
-    font-size: 6px;
-    color: #888;
-    text-align: center;
-    height: 12px;
-    letter-spacing: 1px;
-  }
+  .result-side-item .ri { font-size: clamp(18px, 3.5vw, 36px); line-height: 1; }
+  .result-side-item .rv { font-size: clamp(5px, 1vw, 10px); color: #fff; letter-spacing: 0.5px; text-align: center; }
 
   .credits {
     text-align: center;
-    font-size: 5.5px;
+    font-size: clamp(4px, 0.8vw, 8px);
     color: #444;
-    margin-top: 12px;
+    margin-top: 0.6%;
     letter-spacing: 1px;
+    flex-shrink: 0;
   }
-
-
 </style>
 </head>
 <body>
 
+<div id="hbg-wrap">
 <div id="hbg-root">
   <div class="pixel-deco">
     <div class="px-block"></div><div class="px-block"></div><div class="px-block"></div>
@@ -274,7 +313,6 @@
     <div class="side-machine">
       <div class="section-head">&#9660; SIDE &#9660;</div>
       <div class="slot-row"><div class="slot-label">SIDE</div><div class="slot-window"><div class="slot-reel" id="reel-side"></div></div></div>
-
     </div>
   </div>
 
@@ -286,21 +324,22 @@
   <div class="result-box" id="result-box">
     <div class="result-title" id="result-title">PULL THE LEVER TO BEGIN!</div>
     <div class="result-cols" id="result-cols" style="display:none;">
-      <div>
+      <div style="display:flex;flex-direction:column;">
         <div class="result-col-head">🍔 YOUR BURGER</div>
-        <div id="result-burger"></div>
+        <div class="result-burger-inner" id="result-burger"></div>
       </div>
-      <div style="display:flex;">
-        <div class="result-divider"></div>
-        <div style="flex:1;">
-          <div class="result-col-head">🍟 YOUR SIDE</div>
-          <div id="result-side"></div>
+      <div style="display:grid;grid-template-columns:auto 1fr;">
+        <div class="result-divider-col"><div class="result-divider"></div></div>
+        <div style="display:flex;flex-direction:column;">
+          <div class="result-col-head" style="padding-left:6%;">🍟 YOUR SIDE</div>
+          <div class="result-side-item" id="result-side"></div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="credits">BURGER-O-MATIC v4.0 &bull; ALL BURGERS FICTIONAL</div>
+  <div class="credits">BURGER-O-MATIC v5.0 &bull; ALL BURGERS FICTIONAL</div>
+</div>
 </div>
 
 <script>
@@ -319,6 +358,11 @@
   let spinning = false;
   let winnerIndices = {};
 
+  function getItemH() {
+    const w = document.querySelector('.slot-window');
+    return w ? w.offsetHeight : 52;
+  }
+
   function buildReel(id) {
     const reel = document.getElementById('reel-' + id);
     const items = REELS[id].items;
@@ -333,15 +377,21 @@
   function setReelPos(id, idx) {
     const reel = document.getElementById('reel-' + id);
     const len = REELS[id].items.length;
-    reel.style.transform = `translateY(${-(idx % len) * 36}px)`;
+    const h = getItemH();
+    reel.style.transform = `translateY(${-(idx % len) * h}px)`;
   }
 
-  REEL_IDS.forEach(id => { winnerIndices[id] = 0; setReelPos(id, 0); highlightWinner(id, 0); });
+  function initReels() {
+    REEL_IDS.forEach(id => { winnerIndices[id] = 0; setReelPos(id, 0); highlightWinner(id, 0); });
+  }
+
+  // Wait for fonts/layout to settle before initialising positions
+  window.addEventListener('load', initReels);
 
   function animateReel(id, finalIdx, duration, onDone) {
     const reel = document.getElementById('reel-' + id);
     const len = REELS[id].items.length;
-    const h = 36;
+    const h = getItemH();
     const start = performance.now();
     const startPos = -((winnerIndices[id] || 0) % len) * h;
     const extraSpins = (3 + REEL_IDS.indexOf(id)) * len;
@@ -417,7 +467,7 @@
     document.getElementById('result-burger').innerHTML = burgerHTML;
     const { icon, label } = REELS.side.items[picks.side];
     document.getElementById('result-side').innerHTML =
-      `<div class="result-side-item"><span class="ri">${icon}</span><span class="rv">${label}</span></div>`;
+      `<span class="ri">${icon}</span><span class="rv">${label}</span>`;
     document.getElementById('result-cols').style.display = 'grid';
   }
 </script>
