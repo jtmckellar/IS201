@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Burger-O-Matic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; image-rendering: pixelated; margin: 0; padding: 0; }
+
+  body {
+    background: #0d0d1a;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 32px 16px;
+  }
+
+  #hbg-root {
+    font-family: 'Press Start 2P', monospace;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    padding: 20px 14px 28px;
+    border: 4px solid #4a4a8a;
+    box-shadow: inset 0 0 0 4px #0d0d1a;
+    width: 100%;
+    max-width: 600px;
+  }
+
+  .hbg-title {
+    text-align: center;
+    font-size: 12px;
+    color: #ffd700;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+    text-shadow: 3px 3px 0 #8b6914;
+  }
+
+  .hbg-subtitle {
+    text-align: center;
+    font-size: 6px;
+    color: #888;
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+  }
+
+  .pixel-deco { display: flex; justify-content: center; gap: 5px; margin-bottom: 10px; }
+  .px-block { width: 9px; height: 9px; background: #ffd700; }
+  .px-block:nth-child(even) { background: #c0392b; }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .slot-machine, .side-machine {
+    background: #0d0d1a;
+    border: 4px solid #4a4a8a;
+    padding: 10px 8px;
+    box-shadow: inset 2px 2px 0 #000, inset -2px -2px 0 #6a6aaa;
+  }
+
+  .section-head {
+    font-size: 6px;
+    color: #ffd700;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+
+  .slot-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+    gap: 6px;
+  }
+
+  .slot-label {
+    font-size: 5px;
+    color: #ffd700;
+    width: 36px;
+    flex-shrink: 0;
+    text-align: center;
+    letter-spacing: 0.5px;
+    line-height: 1.4;
+  }
+
+  .slot-window {
+    flex: 1;
+    height: 36px;
+    background: #060612;
+    border: 3px solid #333366;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 2px 2px 0 #000;
+  }
+
+  .slot-window::before, .slot-window::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    height: 8px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .slot-window::before { top: 0; background: linear-gradient(#060612, transparent); }
+  .slot-window::after  { bottom: 0; background: linear-gradient(transparent, #060612); }
+
+  .slot-reel { display: flex; flex-direction: column; will-change: transform; }
+
+  .slot-item {
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    color: #e0e0ff;
+    white-space: nowrap;
+    padding: 0 4px;
+  }
+  .slot-item .si { font-size: 16px; line-height: 1; flex-shrink: 0; }
+  .slot-item .st { font-size: 5px; letter-spacing: 0.3px; color: #ccc; }
+  .slot-item.winner { background: #1a1a00; }
+  .slot-item.winner .st { color: #ffd700; }
+
+  .lever-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 14px;
+    gap: 8px;
+  }
+
+  #lever-btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    background: #c0392b;
+    color: #fff;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    width: 160px;
+    height: 40px;
+    display: block;
+    box-shadow: 0 6px 0 #7b241c, 0 7px 0 #000;
+    letter-spacing: 1px;
+    transition: box-shadow .08s, transform .08s;
+    user-select: none;
+  }
+  #lever-btn:active, #lever-btn.pressed {
+    box-shadow: 0 1px 0 #7b241c, 0 2px 0 #000;
+    transform: translateY(5px);
+  }
+  #lever-btn:disabled {
+    background: #555;
+    box-shadow: 0 6px 0 #333, 0 7px 0 #000;
+    cursor: not-allowed;
+    color: #888;
+  }
+  #lever-btn span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    border-top: 3px solid #e74c3c;
+    border-left: 3px solid #e74c3c;
+  }
+
+  .result-box {
+    background: #060612;
+    border: 4px solid #4a4a8a;
+    padding: 12px 10px;
+    box-shadow: inset 2px 2px 0 #000;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .result-title {
+    font-size: 6.5px;
+    color: #ffd700;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+
+  .result-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 0;
+    width: 100%;
+  }
+
+  .result-col-head {
+    font-size: 5.5px;
+    color: #aaa;
+    letter-spacing: 1px;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+
+  .result-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 5px;
+  }
+  .result-row .ri { font-size: 13px; line-height: 1; flex-shrink: 0; }
+  .result-row .rl { font-size: 4.5px; color: #888; letter-spacing: 0.5px; flex-shrink: 0; }
+  .result-row .rv { font-size: 5px; color: #fff; letter-spacing: 0.3px; }
+
+  .result-divider { width: 1px; background: #333366; margin: 0 8px; }
+
+  .result-side-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 4px;
+  }
+  .result-side-item .ri { font-size: 18px; }
+  .result-side-item .rv { font-size: 6px; color: #fff; letter-spacing: 0.5px; }
+
+  #status-msg {
+    font-size: 6px;
+    color: #888;
+    text-align: center;
+    height: 12px;
+    letter-spacing: 1px;
+  }
+
+  .credits {
+    text-align: center;
+    font-size: 5.5px;
+    color: #444;
+    margin-top: 12px;
+    letter-spacing: 1px;
+  }
+
+
+</style>
+</head>
+<body>
+
+<div id="hbg-root">
+  <div class="pixel-deco">
+    <div class="px-block"></div><div class="px-block"></div><div class="px-block"></div>
+    <div class="px-block"></div><div class="px-block"></div><div class="px-block"></div>
+    <div class="px-block"></div><div class="px-block"></div>
+  </div>
+  <div class="hbg-title">BURGER-O-MATIC</div>
+  <div class="hbg-subtitle">INSERT COIN &bull; PULL LEVER &bull; EAT UP</div>
+
+  <div class="two-col">
+    <div class="slot-machine">
+      <div class="section-head">&#9660; BURGER &#9660;</div>
+      <div class="slot-row"><div class="slot-label">BUN</div><div class="slot-window"><div class="slot-reel" id="reel-bun"></div></div></div>
+      <div class="slot-row"><div class="slot-label">MEAT</div><div class="slot-window"><div class="slot-reel" id="reel-meat"></div></div></div>
+      <div class="slot-row"><div class="slot-label">CHEESE</div><div class="slot-window"><div class="slot-reel" id="reel-cheese"></div></div></div>
+      <div class="slot-row"><div class="slot-label">VEG</div><div class="slot-window"><div class="slot-reel" id="reel-veg"></div></div></div>
+      <div class="slot-row"><div class="slot-label">SAUCE</div><div class="slot-window"><div class="slot-reel" id="reel-sauce"></div></div></div>
+      <div class="slot-row"><div class="slot-label">EXTRA</div><div class="slot-window"><div class="slot-reel" id="reel-extra"></div></div></div>
+    </div>
+
+    <div class="side-machine">
+      <div class="section-head">&#9660; SIDE &#9660;</div>
+      <div class="slot-row"><div class="slot-label">SIDE</div><div class="slot-window"><div class="slot-reel" id="reel-side"></div></div></div>
+
+    </div>
+  </div>
+
+  <div class="lever-area">
+    <div id="status-msg">READY TO ROLL!</div>
+    <button id="lever-btn" onclick="pullLever()"><span>&#9654; PULL LEVER</span></button>
+  </div>
+
+  <div class="result-box" id="result-box">
+    <div class="result-title" id="result-title">PULL THE LEVER TO BEGIN!</div>
+    <div class="result-cols" id="result-cols" style="display:none;">
+      <div>
+        <div class="result-col-head">🍔 YOUR BURGER</div>
+        <div id="result-burger"></div>
+      </div>
+      <div style="display:flex;">
+        <div class="result-divider"></div>
+        <div style="flex:1;">
+          <div class="result-col-head">🍟 YOUR SIDE</div>
+          <div id="result-side"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="credits">BURGER-O-MATIC v4.0 &bull; ALL BURGERS FICTIONAL</div>
+</div>
+
+<script>
+  const REELS = {
+    bun:    { label:'BUN',    items:[{icon:'🥖',label:'SUB SANDWICH'},{icon:'🍞',label:'LOAF OF BREAD'},{icon:'🍔',label:'NORMAL BUN'},{icon:'🌾',label:'WHEAT BUN'},{icon:'🍪',label:'COOKIE BUN'},{icon:'🍩',label:'DONUT BUN'},{icon:'🍞',label:'RYE BUN'}]},
+    meat:   { label:'MEAT',   items:[{icon:'🦎',label:'IGUANA'},{icon:'🥩',label:'BEEF PATTY'},{icon:'🥩',label:'DOUBLE PATTY'},{icon:'🥩',label:'TEN PATTIES'},{icon:'🌭',label:'HOT DOG'}]},
+    cheese: { label:'CHEESE', items:[{icon:'🧀',label:'AMERICAN'},{icon:'🧀',label:'CHEDDAR'},{icon:'🌶',label:'PEPPER JACK'},{icon:'🐐',label:'GOAT CHEESE'},{icon:'🧀',label:'FETA'},{icon:'🧀',label:'NACHO'}]},
+    veg:    { label:'VEG',    items:[{icon:'🧅',label:'ONION'},{icon:'🥬',label:'LETTUCE'},{icon:'🥕',label:'CARROT'},{icon:'🥒',label:'CUCUMBER'}]},
+    sauce:  { label:'SAUCE',  items:[{icon:'🍅',label:'KETCHUP'},{icon:'💛',label:'MUSTARD'},{icon:'🤍',label:'MAYO'},{icon:'🤍',label:'RANCH'},{icon:'🍖',label:'BBQ'},{icon:'🍝',label:'ALFREDO'},{icon:'🥢',label:'TERIYAKI'}]},
+    extra:  { label:'EXTRA',  items:[{icon:'🥑',label:'AVOCADO'},{icon:'🥓',label:'BACON'},{icon:'🫑',label:'BELL PEPPERS'},{icon:'🧅',label:'ONION RINGS'},{icon:'❌',label:'NONE'}]},
+    side:   { label:'SIDE',   items:[{icon:'🍟',label:'FRIES'},{icon:'🥗',label:'SALAD'},{icon:'🐷',label:'WHOLE PIG'},{icon:'🧅',label:'ONION RINGS'},{icon:'❌',label:'NONE'}]},
+  };
+
+  const REEL_IDS = ['bun','meat','cheese','veg','sauce','extra','side'];
+  const BURGER_IDS = ['bun','meat','cheese','veg','sauce','extra'];
+  let spinning = false;
+  let winnerIndices = {};
+
+  function buildReel(id) {
+    const reel = document.getElementById('reel-' + id);
+    const items = REELS[id].items;
+    const makeItems = () => items.map((v, i) =>
+      `<div class="slot-item" data-idx="${i}"><span class="si">${v.icon}</span><span class="st">${v.label}</span></div>`
+    ).join('');
+    reel.innerHTML = makeItems() + makeItems() + makeItems();
+  }
+
+  REEL_IDS.forEach(buildReel);
+
+  function setReelPos(id, idx) {
+    const reel = document.getElementById('reel-' + id);
+    const len = REELS[id].items.length;
+    reel.style.transform = `translateY(${-(idx % len) * 36}px)`;
+  }
+
+  REEL_IDS.forEach(id => { winnerIndices[id] = 0; setReelPos(id, 0); highlightWinner(id, 0); });
+
+  function animateReel(id, finalIdx, duration, onDone) {
+    const reel = document.getElementById('reel-' + id);
+    const len = REELS[id].items.length;
+    const h = 36;
+    const start = performance.now();
+    const startPos = -((winnerIndices[id] || 0) % len) * h;
+    const extraSpins = (3 + REEL_IDS.indexOf(id)) * len;
+    const endPos = -((extraSpins + finalIdx) % (len * 3)) * h;
+    function ease(t) { if (t < 0.6) return t / 0.6; const u = (t - 0.6) / 0.4; return 1 - u * u; }
+    function frame(now) {
+      const t = Math.min((now - start) / duration, 1);
+      reel.style.transition = 'none';
+      reel.style.transform = `translateY(${startPos + (endPos - startPos) * ease(t)}px)`;
+      if (t < 1) { requestAnimationFrame(frame); }
+      else {
+        reel.style.transform = `translateY(${-(finalIdx % len) * h}px)`;
+        winnerIndices[id] = finalIdx;
+        highlightWinner(id, finalIdx);
+        if (onDone) onDone();
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function highlightWinner(id, idx) {
+    const reel = document.getElementById('reel-' + id);
+    const len = REELS[id].items.length;
+    reel.querySelectorAll('.slot-item').forEach((el, i) => {
+      el.classList.toggle('winner', i % len === idx % len);
+    });
+  }
+
+  const STATUS = ['SPINNING...', 'ROLLING!', 'HERE WE GO!', 'JACKPOT?', 'ALMOST...', 'SO CLOSE!'];
+  let sIdx = 0, sInt;
+  function startStatus() {
+    sIdx = 0;
+    document.getElementById('status-msg').textContent = STATUS[0];
+    sInt = setInterval(() => { sIdx = (sIdx + 1) % STATUS.length; document.getElementById('status-msg').textContent = STATUS[sIdx]; }, 280);
+  }
+  function stopStatus(m) { clearInterval(sInt); document.getElementById('status-msg').textContent = m; }
+
+  function pullLever() {
+    if (spinning) return;
+    spinning = true;
+    const btn = document.getElementById('lever-btn');
+    btn.disabled = true;
+    btn.classList.add('pressed');
+    setTimeout(() => btn.classList.remove('pressed'), 180);
+    document.getElementById('result-title').textContent = 'SPINNING...';
+    document.getElementById('result-cols').style.display = 'none';
+    startStatus();
+    const picks = {};
+    REEL_IDS.forEach(id => { picks[id] = Math.floor(Math.random() * REELS[id].items.length); });
+    let done = 0;
+    REEL_IDS.forEach((id, i) => {
+      setTimeout(() => {
+        animateReel(id, picks[id], 900 + i * 280, () => {
+          done++;
+          if (done === REEL_IDS.length) {
+            showResult(picks);
+            spinning = false;
+            btn.disabled = false;
+            stopStatus('PULL AGAIN!');
+          }
+        });
+      }, i * 70);
+    });
+  }
+
+  function showResult(picks) {
+    document.getElementById('result-title').innerHTML = '&#9733; YOUR MEAL &#9733;';
+    const burgerHTML = BURGER_IDS.map(id => {
+      const { icon, label } = REELS[id].items[picks[id]];
+      const catLabel = REELS[id].label;
+      return `<div class="result-row"><span class="ri">${icon}</span><span class="rl">${catLabel}:</span><span class="rv">${label}</span></div>`;
+    }).join('');
+    document.getElementById('result-burger').innerHTML = burgerHTML;
+    const { icon, label } = REELS.side.items[picks.side];
+    document.getElementById('result-side').innerHTML =
+      `<div class="result-side-item"><span class="ri">${icon}</span><span class="rv">${label}</span></div>`;
+    document.getElementById('result-cols').style.display = 'grid';
+  }
+</script>
+</body>
+</html>

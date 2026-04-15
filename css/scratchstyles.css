@@ -1,0 +1,100 @@
+body{
+    background-color: tan;
+    color: purple;
+    font-family:Arial, Helvetica, sans-serif;
+    margin: 0px;
+}
+ul ol{
+    text-align: left;
+    float: left;
+    display: block;
+}
+.top{
+    background-color: purple;
+    color: tan;
+    line-height: 50px;
+    height: 20%;
+    padding: 10px;
+    text-align: center;
+}
+.nav{
+    color: tan;
+    background-color: white;
+    padding:20px;
+    text-align: center;
+    font-weight: bold;
+}
+a.navlink{
+    color: tan;
+    text-decoration: none;
+    margin: 20px;
+    padding: 5px;
+}
+a.navlink:hover{
+    color: purple;
+}
+a.navlink:visited{
+    color: tan;
+}
+a.lightlinink{
+    color: tan;
+}
+a.lightlink:visited{
+    color: tan;
+}
+.content{
+    margin-bottom: 50px;
+    padding-bottom: 50px;
+}
+.main{
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 10px;
+    padding: 20px;
+    margin-bottom: 50px;
+}
+.rightimg{
+    display: block;
+    width: 100%;
+    margin-right: 0px;
+    margin-left: auto;
+    margin-top: 25px;
+    text-align: center;
+}
+.video{
+    float: none;
+    width: 100%;
+    height: auto; /* let aspect-ratio determine height */
+    aspect-ratio: 16/9; /* keeps iframe at 16:9 proportion */
+    margin-right: 0px;
+    margin-left: auto;
+    margin-top: 25px;
+}
+.footer{
+    position: fixed;
+    padding: 10px;
+    bottom: 5px;
+    left: 5px;
+    right: 5px;
+    background-color: purple;
+    color: tan;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+}
+.button{
+    display: block;
+    line-height: 25px;
+    width: 100px;
+    margin: 20px auto;
+    color: Purple;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    border: 5px solid purple;
+    border-radius: 5px;
+}
+.button:hover{
+    background-color: purple;
+    color: tan;
+}
